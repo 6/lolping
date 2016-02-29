@@ -9,6 +9,7 @@ var imagePath = function(filename) {
 };
 
 var appIcon = null;
+app.dock.hide();
 app.on('ready', function(){
   appIcon = new Tray(imagePath('IconTemplate.png'));
   var contextMenu = Menu.buildFromTemplate([
