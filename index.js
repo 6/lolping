@@ -8,7 +8,9 @@ var _ = require('lodash');
 var pingMetrics = require('ping-metrics');
 
 const storage = require('lowdb/file-sync');
-const db = low('db.json', {storage});
+var dbPath = path.join(app.getPath('userData'), 'db.json');
+console.log("Storing settings at:", dbPath);
+const db = low(dbPath, {storage});
 var trayApp = null;
 var ping = null;
 
