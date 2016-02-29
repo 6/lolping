@@ -2,10 +2,13 @@ const electron = require('electron');
 const app = electron.app;
 const Menu = electron.Menu;
 const Tray = electron.Tray;
+const low = require('lowdb')
 var path = require('path');
 var _ = require('lodash');
 var pingMetrics = require('ping-metrics');
 
+const storage = require('lowdb/file-sync');
+const db = low('db.json', {storage});
 var trayApp = null;
 var ping = null;
 
@@ -20,7 +23,6 @@ var servers = {
   LAS: "138.0.12.100",
   TR: "31.186.226.34"
 };
-var currentServer = "NA";
 
 var imagePath = function(filename) {
   return path.join(__dirname, 'images', filename);
@@ -30,11 +32,25 @@ var quit = function() {
   app.quit();
 };
 
-var changeServer = function(server) {
-  if (server === currentServer) {
+var setDefaultSettings = function() {
+  if (!currentServer()) {
+    setServer("NA");
+  }
+};
+
+var currentServer = function() {
+  return db('settings').find({name: 'server'}).value;
+};
+
+var setServer = function(server) {
+  db('settings').chain().find({name: 'server'}).assign({value: server}).value();
+};
+
+var onChangeServer = function(server) {
+  if (server === currentServer()) {
     return;
   }
-  currentServer = server;
+  setServer(server);
   startPing();
 };
 
@@ -42,7 +58,7 @@ var startPing = function() {
   if (ping) {
     ping.stop();
   }
-  var ip = servers[currentServer];
+  var ip = servers[currentServer()];
   ping = pingMetrics({ip: ip, interval: 1000, numIntervals: 60}, function(metrics) {
     console.log("PING:", ip, metrics.ping);
     if (metrics.ping < 50) {
@@ -60,11 +76,12 @@ var startPing = function() {
 
 app.dock.hide();
 app.on('ready', function(){
+  setDefaultSettings();
   trayApp = new Tray(imagePath('IconTemplate.png'));
   var contextMenuTemplate = [];
   for(var server in servers) {
     var onClick = (function(server) {
-      return function(){ changeServer(server); }
+      return function(){ onChangeServer(server); }
     })(server);
     contextMenuTemplate.push({
       label: server,
@@ -75,7 +92,7 @@ app.on('ready', function(){
   contextMenuTemplate.push({type: 'separator'});
   contextMenuTemplate.push({label: 'Quit', type: 'normal', click: quit});
   var currentServerItemIndex = _.findIndex(contextMenuTemplate, function(item) {
-    return item.label === currentServer;
+    return item.label === currentServer();
   });
   contextMenuTemplate[currentServerItemIndex].checked = true;
   var contextMenu = Menu.buildFromTemplate(contextMenuTemplate);
