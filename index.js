@@ -2,6 +2,8 @@ const electron = require('electron');
 const app = electron.app;
 const Menu = electron.Menu;
 const Tray = electron.Tray;
+const BrowserWindow = electron.BrowserWindow;
+const ipcMain = electron.ipcMain;
 const low = require('lowdb')
 var path = require('path');
 var _ = require('lodash');
@@ -13,6 +15,7 @@ console.log("Storing settings at:", dbPath);
 const db = low(dbPath, {storage});
 var trayApp = null;
 var ping = null;
+var settingsWindow = null;
 
 // IPs from https://support.riotgames.com/hc/en-us/articles/201752674-Network-System-and-League-of-Legends-Logs
 var servers = {
@@ -28,6 +31,10 @@ var imagePath = function(filename) {
 
 var quit = function() {
   app.quit();
+};
+
+var openSettings = function() {
+  settingsWindow.show();
 };
 
 var setDefaultSettings = function() {
@@ -83,8 +90,13 @@ var startPing = function() {
 };
 
 app.dock.hide();
+ipcMain.on('settings.close', function(event, arg) {
+  settingsWindow.hide();
+});
 app.on('ready', function(){
   setDefaultSettings();
+  settingsWindow = new BrowserWindow({width: 500, height: 300, show: false, frame: false});
+  settingsWindow.loadURL('file://' + path.join(__dirname, 'ui', 'settings', 'settings.html'));
   trayApp = new Tray(imagePath('Icon1.png'));
   var contextMenuTemplate = [];
   for(var server in servers) {
@@ -97,6 +109,8 @@ app.on('ready', function(){
       click: onClick
     });
   }
+  contextMenuTemplate.push({type: 'separator'});
+  contextMenuTemplate.push({label: 'Settings', type: 'normal', click: openSettings});
   contextMenuTemplate.push({type: 'separator'});
   contextMenuTemplate.push({label: 'Quit', type: 'normal', click: quit});
   var currentServerItemIndex = _.findIndex(contextMenuTemplate, function(item) {

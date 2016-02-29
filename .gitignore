@@ -36,3 +36,4 @@ jspm_packages
 # Project-specific
 db.json
 dist
+bower_components
