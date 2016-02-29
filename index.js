@@ -62,15 +62,17 @@ var startPing = function() {
   }
   var ip = servers[currentServer()];
   ping = pingMetrics({ip: ip, interval: 1000, numIntervals: 60}, function(metrics) {
-    console.log("PING:", ip, metrics.ping);
-    if (metrics.ping < 50) {
-      trayApp.setImage(imagePath('IconTemplate.png'));
+    console.log(ip);
+    console.log("Current:", metrics.ping, " Avg:", Math.round(metrics.average), " Stdev:", Math.round(metrics.standardDeviation));
+
+    if (metrics.average >= 120 || metrics.standardDeviation >= 30) {
+      trayApp.setImage(imagePath('Icon3.png'));
     }
-    else if (metrics.ping < 120) {
-      trayApp.setImage(imagePath('IconTemplate2.png'));
+    else if (metrics.average >= 80 || metrics.standardDeviation >= 15) {
+      trayApp.setImage(imagePath('Icon2.png'));
     }
     else {
-      trayApp.setImage(imagePath('IconTemplate3.png'));
+      trayApp.setImage(imagePath('Icon1.png'));
     }
   });
   ping.run();
@@ -79,7 +81,7 @@ var startPing = function() {
 app.dock.hide();
 app.on('ready', function(){
   setDefaultSettings();
-  trayApp = new Tray(imagePath('IconTemplate.png'));
+  trayApp = new Tray(imagePath('Icon1.png'));
   var contextMenuTemplate = [];
   for(var server in servers) {
     var onClick = (function(server) {
