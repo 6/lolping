@@ -69,7 +69,7 @@ var startPing = function() {
       "Stdev: " + Math.round(metrics.standardDeviation)
     ].join(" "));
 
-    if (metrics.average >= 120 || metrics.standardDeviation >= 30) {
+    if (metrics.average >= 120 || metrics.standardDeviation >= 30 || metrics.loss > 0) {
       trayApp.setImage(imagePath('Icon3.png'));
     }
     else if (metrics.average >= 80 || metrics.standardDeviation >= 15) {
