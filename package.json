@@ -1,6 +1,6 @@
 {
   "name": "lolping",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "private": true,
   "scripts": {
     "build": "electron-packager . lolping --platform=darwin --arch=x64 --version=0.36.9 --overwrite --out=dist",
