@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "rebuild": "node_modules/.bin/electron-rebuild",
     "preview": "node_modules/.bin/electron app.js"
   },
   "repository": {
@@ -17,6 +18,10 @@
   "homepage": "https://github.com/6/lolping#readme",
   "devDependencies": {
     "electron-packager": "^5.2.1",
-    "electron-prebuilt": "^0.36.9"
+    "electron-prebuilt": "^0.36.9",
+    "electron-rebuild": "^1.1.3"
+  },
+  "dependencies": {
+    "lodash": "^4.5.1"
   }
 }
