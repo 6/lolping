@@ -12,13 +12,13 @@ var quit = function() {
   app.quit();
 };
 
-var appIcon = null;
+var trayApp = null;
 app.dock.hide();
 app.on('ready', function(){
-  appIcon = new Tray(imagePath('IconTemplate.png'));
+  trayApp = new Tray(imagePath('IconTemplate.png'));
   var contextMenu = Menu.buildFromTemplate([
     {label: 'Quit', type: 'normal', click: quit}
   ]);
-  appIcon.setToolTip('This is my application.');
-  appIcon.setContextMenu(contextMenu);
+  trayApp.setToolTip('This is my application.');
+  trayApp.setContextMenu(contextMenu);
 });
