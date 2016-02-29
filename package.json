@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "rebuild": "node_modules/.bin/electron-rebuild",
-    "preview": "node_modules/.bin/electron app.js"
+    "preview": "node_modules/.bin/electron ."
   },
   "repository": {
     "type": "git",
