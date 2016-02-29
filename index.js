@@ -61,9 +61,13 @@ var startPing = function() {
     ping.stop();
   }
   var ip = servers[currentServer()];
+  console.log("Pinging:", ip);
   ping = pingMetrics({ip: ip, interval: 1000, numIntervals: 60}, function(metrics) {
-    console.log(ip);
-    console.log("Current:", metrics.ping, " Avg:", Math.round(metrics.average), " Stdev:", Math.round(metrics.standardDeviation));
+    console.log([
+      "Current: " + metrics.ping,
+      "Avg: " + Math.round(metrics.average),
+      "Stdev: " + Math.round(metrics.standardDeviation)
+    ].join(" "));
 
     if (metrics.average >= 120 || metrics.standardDeviation >= 30) {
       trayApp.setImage(imagePath('Icon3.png'));
