@@ -35,10 +35,14 @@ var setDefaultSettings = function() {
 };
 
 var currentServer = function() {
-  return db('settings').find({name: 'server'}).value;
+  var server = db('settings').find({name: 'server'});
+  return server ? server.value : null;
 };
 
 var setServer = function(server) {
+  if (!currentServer()) {
+    db('settings').push({name: 'server'});
+  }
   db('settings').chain().find({name: 'server'}).assign({value: server}).value();
 };
 
