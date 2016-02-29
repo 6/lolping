@@ -4,9 +4,10 @@ const Menu = electron.Menu;
 const Tray = electron.Tray;
 var path = require('path');
 var _ = require('lodash');
+var pingMetrics = require('ping-metrics');
 
 var trayApp = null;
-var pingMenuItem = null;
+var ping = null;
 
 // IPs from https://support.riotgames.com/hc/en-us/articles/201752674-Network-System-and-League-of-Legends-Logs
 var servers = {
@@ -35,7 +36,26 @@ var changeServer = function(server) {
     return;
   }
   currentIp = newIp;
-  console.log("NEW IP", newIp);
+  startPing();
+};
+
+var startPing = function() {
+  if (ping) {
+    ping.stop();
+  }
+  ping = pingMetrics({ip: currentIp, interval: 1000, numIntervals: 60}, function(metrics) {
+    console.log("PING:", currentIp, metrics.ping);
+    if (metrics.ping < 50) {
+      trayApp.setImage(imagePath('IconTemplate.png'));
+    }
+    else if (metrics.ping < 120) {
+      trayApp.setImage(imagePath('IconTemplate2.png'));
+    }
+    else {
+      trayApp.setImage(imagePath('IconTemplate3.png'));
+    }
+  });
+  ping.run();
 };
 
 app.dock.hide();
@@ -62,4 +82,5 @@ app.on('ready', function(){
 
   trayApp.setToolTip('This is my application.');
   trayApp.setContextMenu(contextMenu);
+  startPing();
 });
