@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "build": "electron-packager . lolping --platform=darwin --arch=x64 --version=0.36.9 --overwrite --out=dist",
     "rebuild": "node_modules/.bin/electron-rebuild",
     "preview": "node_modules/.bin/electron ."
   },
