@@ -20,7 +20,7 @@ var servers = {
   LAS: "138.0.12.100",
   TR: "31.186.226.34"
 };
-var currentIp = servers.NA;
+var currentServer = "NA";
 
 var imagePath = function(filename) {
   return path.join(__dirname, 'images', filename);
@@ -31,11 +31,10 @@ var quit = function() {
 };
 
 var changeServer = function(server) {
-  var newIp = servers[server];
-  if (newIp === currentIp) {
+  if (server === currentServer) {
     return;
   }
-  currentIp = newIp;
+  currentServer = server;
   startPing();
 };
 
@@ -43,8 +42,9 @@ var startPing = function() {
   if (ping) {
     ping.stop();
   }
-  ping = pingMetrics({ip: currentIp, interval: 1000, numIntervals: 60}, function(metrics) {
-    console.log("PING:", currentIp, metrics.ping);
+  var ip = servers[currentServer];
+  ping = pingMetrics({ip: ip, interval: 1000, numIntervals: 60}, function(metrics) {
+    console.log("PING:", ip, metrics.ping);
     if (metrics.ping < 50) {
       trayApp.setImage(imagePath('IconTemplate.png'));
     }
@@ -75,7 +75,7 @@ app.on('ready', function(){
   contextMenuTemplate.push({type: 'separator'});
   contextMenuTemplate.push({label: 'Quit', type: 'normal', click: quit});
   var currentServerItemIndex = _.findIndex(contextMenuTemplate, function(item) {
-    return servers[item.label] === currentIp;
+    return item.label === currentServer;
   });
   contextMenuTemplate[currentServerItemIndex].checked = true;
   var contextMenu = Menu.buildFromTemplate(contextMenuTemplate);
