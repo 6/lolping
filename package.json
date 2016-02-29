@@ -1,0 +1,22 @@
+{
+  "name": "lolping",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "preview": "node_modules/.bin/electron app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/6/lolping.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/6/lolping/issues"
+  },
+  "homepage": "https://github.com/6/lolping#readme",
+  "devDependencies": {
+    "electron-packager": "^5.2.1",
+    "electron-prebuilt": "^0.36.9"
+  }
+}
