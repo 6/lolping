@@ -119,7 +119,6 @@ app.on('ready', function(){
   contextMenuTemplate[currentServerItemIndex].checked = true;
   var contextMenu = Menu.buildFromTemplate(contextMenuTemplate);
 
-  trayApp.setToolTip('This is my application.');
   trayApp.setContextMenu(contextMenu);
   startPing();
 });
